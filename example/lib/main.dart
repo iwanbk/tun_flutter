@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import 'dart:async';
 
@@ -17,6 +19,7 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   String _platformVersion = 'Unknown';
+  String _vpnStarted = 'false';
   final _tunFlutterPlugin = TunFlutter();
 
   @override
@@ -28,13 +31,20 @@ class _MyAppState extends State<MyApp> {
   // Platform messages are asynchronous, so we initialize in an async method.
   Future<void> initPlatformState() async {
     String platformVersion;
+    String vpnStarted;
     // Platform messages may fail, so we use a try/catch PlatformException.
     // We also handle the message potentially returning null.
     try {
-      platformVersion =
-          await _tunFlutterPlugin.getPlatformVersion() ?? 'Unknown platform version';
+      platformVersion = await _tunFlutterPlugin.getPlatformVersion() ??
+          'Unknown platform version';
     } on PlatformException {
       platformVersion = 'Failed to get platform version.';
+    }
+
+    try {
+      vpnStarted = await _tunFlutterPlugin.startVpn() ?? "false";
+    } on PlatformException {
+      vpnStarted = "false";
     }
 
     // If the widget was removed from the tree while the asynchronous platform
@@ -44,6 +54,7 @@ class _MyAppState extends State<MyApp> {
 
     setState(() {
       _platformVersion = platformVersion;
+      _vpnStarted = vpnStarted;
     });
   }
 
@@ -55,7 +66,7 @@ class _MyAppState extends State<MyApp> {
           title: const Text('Plugin example app'),
         ),
         body: Center(
-          child: Text('Running on: $_platformVersion\n'),
+          child: Text('Running on: $_platformVersion vpn: $_vpnStarted\n'),
         ),
       ),
     );

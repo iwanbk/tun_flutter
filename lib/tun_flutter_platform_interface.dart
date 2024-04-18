@@ -26,4 +26,8 @@ abstract class TunFlutterPlatform extends PlatformInterface {
   Future<String?> getPlatformVersion() {
     throw UnimplementedError('platformVersion() has not been implemented.');
   }
+
+  Future<String?> startVpn() {
+    throw UnimplementedError('startVpn() has not been implemented.');
+  }
 }
