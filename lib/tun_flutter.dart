@@ -5,8 +5,8 @@ class TunFlutter {
     return TunFlutterPlatform.instance.getPlatformVersion();
   }
 
-  Future<bool?> startVpn() {
-    return TunFlutterPlatform.instance.startVpn();
+  Future<bool?> startVpn(Map<String, String> configs) {
+    return TunFlutterPlatform.instance.startVpn(configs);
   }
 
   Future<int?> getTunFD() {

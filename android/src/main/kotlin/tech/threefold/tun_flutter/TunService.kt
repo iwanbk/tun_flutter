@@ -38,21 +38,22 @@ class TunService : VpnService() {
             }
 
             else -> {
-                Log.e("tff", "Starting...")
-                start();
+                Log.e("tff", "[TunService]Starting...")
+                val nodeAddr = intent.getStringExtra("node_addr") ?: "192.168.1.1"
+                start(nodeAddr);
                 START_STICKY
             }
         }
     }
 
-    private fun start(): Int {
+    private fun start(nodeAddr: String): Int {
         if (!started.compareAndSet(false, true)) {
             return 0
         }
-        Log.e("tff", "start to create the TUN device")
+        Log.e("tff", "start to create the TUN device with node addr:" + nodeAddr)
 
         val builder = Builder()
-            .addAddress("192.168.2.2", 24)
+            .addAddress(nodeAddr, 24)
             //.addRoute("200::", 7)
             //.allowBypass()
             //.allowFamily(OsConstants.AF_INET)

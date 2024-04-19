@@ -29,6 +29,7 @@ class TunFlutterPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
     private lateinit var context: Context
     private lateinit var activity: Activity
 
+
     private var tun_fd: Int = 0
 
     var VPN_REQUEST_CODE = 0x0F // const val?
@@ -44,7 +45,7 @@ class TunFlutterPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
         if (call.method == "getPlatformVersion") {
             result.success("Android ${android.os.Build.VERSION.RELEASE}")
         } else if (call.method == "startVpn") {
-            val started = startVpn()
+            val started = startVpn(call.argument<String>("nodeAddr")!!)
             Log.d("tff", "" + "VPN Started ")
             result.success(started)
         } else if (call.method == "getTunFD") {
@@ -68,7 +69,7 @@ class TunFlutterPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
     override fun onReattachedToActivityForConfigChanges(binding: ActivityPluginBinding) {}
     override fun onDetachedFromActivityForConfigChanges() {}
 
-    private fun startVpn(): Boolean {
+    private fun startVpn(nodeAddr: String): Boolean {
         Log.d("tff", "preparing vpn service")
 
         val intent = VpnService.prepare(context)
@@ -79,7 +80,6 @@ class TunFlutterPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
         }
 
 
-
         LocalBroadcastManager.getInstance(activity)
             .registerReceiver(receiver, IntentFilter(TunService.RECEIVER_INTENT))
 
@@ -87,6 +87,7 @@ class TunFlutterPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
         val TASK_CODE = 100
         val pi = activity.createPendingResult(TASK_CODE, intentTff, 0)
         intentTff.action = TunService.ACTION_START
+        intentTff.putExtra("node_addr", nodeAddr)
         val startResult = activity.startService(intentTff)
 
         Log.e("tff", "start service result: " + startResult.toString())
