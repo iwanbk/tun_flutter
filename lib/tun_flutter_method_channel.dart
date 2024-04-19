@@ -11,7 +11,20 @@ class MethodChannelTunFlutter extends TunFlutterPlatform {
 
   @override
   Future<String?> getPlatformVersion() async {
-    final version = await methodChannel.invokeMethod<String>('getPlatformVersion');
+    final version =
+        await methodChannel.invokeMethod<String>('getPlatformVersion');
     return version;
+  }
+
+  @override
+  Future<bool?> startVpn(Map<String, String> configs) async {
+    final started = await methodChannel.invokeMethod<bool>('startVpn', configs);
+    return started;
+  }
+
+  @override
+  Future<int?> getTunFD() async {
+    final val = await methodChannel.invokeMethod<int>('getTunFD');
+    return val;
   }
 }
