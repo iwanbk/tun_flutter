@@ -6,6 +6,7 @@ import android.os.ParcelFileDescriptor
 import android.system.OsConstants
 import android.util.Log
 import java.util.concurrent.atomic.AtomicBoolean
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 
 class TunService : VpnService() {
 
@@ -71,6 +72,14 @@ class TunService : VpnService() {
         }
 
         Log.e("tff", "#########   parcel fd: " + parcel.fd)
+
+        // broadcast the parcel fd
+        val intent = Intent(RECEIVER_INTENT)
+        intent.putExtra("type", "state")
+        intent.putExtra("parcel_fd", parcel.fd)
+        intent.putExtra("started", true)
+        Log.d("TunService", "BROADCAST")
+        LocalBroadcastManager.getInstance(this).sendBroadcast(intent)
 
         return parcel.fd
     }

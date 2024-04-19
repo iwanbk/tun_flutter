@@ -29,6 +29,8 @@ class TunFlutterPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
     private lateinit var context: Context
     private lateinit var activity: Activity
 
+    private var tun_fd: Int = 0
+
     var VPN_REQUEST_CODE = 0x0F // const val?
 
     override fun onAttachedToEngine(flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
@@ -44,7 +46,9 @@ class TunFlutterPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
         } else if (call.method == "startVpn") {
             val started = startVpn()
             Log.d("tff", "" + "VPN Started ")
-            result.success(started.toString())
+            result.success(started)
+        } else if (call.method == "getTunFD") {
+            result.success(tun_fd)
         } else {
             result.notImplemented()
         }
@@ -96,14 +100,15 @@ class TunFlutterPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
 
                 when (intent.getStringExtra("type")) {
                     "state" -> {
-                        if (intent.getStringExtra("ip") == null) {
-                            //currentIp = "";
-                            return;
-                        }
-                        //if (currentIp != intent.getStringExtra("ip")) {
-                        // ip has changed!.
-                        //  currentIp = intent.getStringExtra("ip")
-                        //  reportIp(currentIp)
+                        Log.e(
+                            "tff - broadcast",
+                            "" + intent.getBooleanExtra("started", false).toString()
+                        )
+                        Log.e(
+                            "tff - broadcast",
+                            "" + intent.getIntExtra("parcel_fd", 0).toString()
+                        )
+                        tun_fd = intent.getIntExtra("parcel_fd", 0)
                     }
                 }
             }

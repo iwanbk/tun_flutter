@@ -5,7 +5,11 @@ class TunFlutter {
     return TunFlutterPlatform.instance.getPlatformVersion();
   }
 
-  Future<String?> startVpn() {
+  Future<bool?> startVpn() {
     return TunFlutterPlatform.instance.startVpn();
+  }
+
+  Future<int?> getTunFD() {
+    return TunFlutterPlatform.instance.getTunFD();
   }
 }
