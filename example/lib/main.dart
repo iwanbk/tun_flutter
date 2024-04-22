@@ -46,7 +46,7 @@ class _MyAppState extends State<MyApp> {
 
     try {
       vpnStarted = await _tunFlutterPlugin.startVpn({
-            'nodeAddr': '192.168.2.2',
+            'nodeAddr': '5b4:86cf:d8db:87ee:3c:ab49:ef82:8f81',
           }) ??
           false;
     } on PlatformException {

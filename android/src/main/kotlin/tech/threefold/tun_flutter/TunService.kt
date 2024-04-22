@@ -53,8 +53,8 @@ class TunService : VpnService() {
         Log.e("tff", "start to create the TUN device with node addr:" + nodeAddr)
 
         val builder = Builder()
-            .addAddress(nodeAddr, 24)
-            //.addRoute("200::", 7)
+            .addAddress(nodeAddr, 64)
+            .addRoute("400::", 7)
             //.allowBypass()
             //.allowFamily(OsConstants.AF_INET)
             //.setBlocking(true)
