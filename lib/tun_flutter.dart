@@ -9,6 +9,10 @@ class TunFlutter {
     return TunFlutterPlatform.instance.startVpn(configs);
   }
 
+  Future<bool?> stopVpn() {
+    return TunFlutterPlatform.instance.stopVpn();
+  }
+
   Future<int?> getTunFD() {
     return TunFlutterPlatform.instance.getTunFD();
   }

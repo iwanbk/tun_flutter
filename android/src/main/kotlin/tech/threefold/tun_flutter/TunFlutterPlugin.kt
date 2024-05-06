@@ -42,16 +42,20 @@ class TunFlutterPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
     }
 
     override fun onMethodCall(call: MethodCall, result: Result) {
-        if (call.method == "getPlatformVersion") {
-            result.success("Android ${android.os.Build.VERSION.RELEASE}")
-        } else if (call.method == "startVpn") {
-            val started = startVpn(call.argument<String>("nodeAddr")!!)
-            Log.d("tff", "" + "VPN Started ")
-            result.success(started)
-        } else if (call.method == "getTunFD") {
-            result.success(tun_fd)
-        } else {
-            result.notImplemented()
+        when (call.method) {
+            "getPlatformVersion" -> result.success("Android ${android.os.Build.VERSION.RELEASE}")
+            "startVpn" -> {
+                val started = startVpn(call.argument<String>("nodeAddr")!!)
+                Log.d("tff", "" + "VPN Started ")
+                result.success(started)
+            }
+            "stopVpn" -> {
+                val stopCmdSent = stopVpn()
+                Log.d("tff",  "stopping VPN")
+                result.success(stopCmdSent)
+            }
+            "getTunFD" -> result.success(tun_fd)
+            else -> result.notImplemented()
         }
     }
 
@@ -91,6 +95,14 @@ class TunFlutterPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
         val startResult = activity.startService(intentTff)
 
         Log.e("tff", "start service result: " + startResult.toString())
+
+        return true
+    }
+
+    private fun stopVpn(): Boolean {
+        val intent = Intent(context, TunService::class.java)
+        intent.action = TunService.ACTION_STOP
+        activity.startService(intent)
 
         return true
     }

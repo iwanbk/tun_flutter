@@ -23,9 +23,13 @@ class TunService : VpnService() {
         super.onCreate()
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        stop()
+    }
+
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        Log.e("tff", "Got a start command ")
-        Log.e("tff", "Got a start command " + intent!!.action)
+        Log.e("tff", "Got a command " + intent!!.action)
 
         if (intent == null) {
             Log.d("TunService", "Intent is null")
@@ -87,6 +91,14 @@ class TunService : VpnService() {
     }
 
     private fun stop() {
-        Log.e("tff", "stop called, without real handler")
+        if (!started.compareAndSet(true, false)) {
+            return
+        }
+        Log.e("tff", "TunService stop called")
+        // stop the device from the rust code
+        // (already done from the flutter side)
+
+        parcel?.close()
+        stopSelf()
     }
 }

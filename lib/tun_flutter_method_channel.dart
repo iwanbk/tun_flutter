@@ -23,6 +23,12 @@ class MethodChannelTunFlutter extends TunFlutterPlatform {
   }
 
   @override
+  Future<bool?> stopVpn() async {
+    final stopped = await methodChannel.invokeMethod<bool>('stopVpn');
+    return stopped;
+  }
+
+  @override
   Future<int?> getTunFD() async {
     final val = await methodChannel.invokeMethod<int>('getTunFD');
     return val;
